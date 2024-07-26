@@ -1,5 +1,11 @@
 {
     "files": [
-        "main.py"
+        "main.py",
+        "tabs/tab_02.py",
+        "tabs/tab_03.py",
+        "tabs/tab_04.py",
+        "tabs/tab_05.py",
+        "tabs/tab_06.py",
+        "tabs/tab_todo.py"
     ]
 }
