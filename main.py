@@ -1,5 +1,5 @@
 import sys
-from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QGridLayout, QGroupBox, QCheckBox, QPushButton, QMessageBox, QWidget, QTabWidget
+from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QMessageBox, QWidget, QTabWidget
 from PySide6.QtGui import QAction
 
 from tabs.tab_01 import Tab01
@@ -31,7 +31,7 @@ class MiVentana(QMainWindow):
 
     def configurarVentana(self):
         self.setWindowTitle('Visualizador Bioinformatica')
-        self.setGeometry(100, 100, 800, 700)
+        self.setGeometry(100, 100, 1000, 900)
 
     def configurarMenu(self):
         # Crear barra de menú

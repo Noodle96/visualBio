@@ -1,5 +1,6 @@
 {
     "files": [
+        "alignment/sequence_alignment.py",
         "main.py",
         "tabs/tab_02.py",
         "tabs/tab_03.py",
