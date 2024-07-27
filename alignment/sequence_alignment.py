@@ -57,7 +57,7 @@ def dfs(x, y, secuenciaOne, secuenciaTwo):
             dfs(x, y - 1, secuenciaOne, secuenciaTwo)
             ans.pop()
 
-def solve(secuenciaOne, secuenciaTwo):
+def solve(secuenciaOne, secuenciaTwo, penalizacion):
     reset_globals()  # Reiniciar variables globales
     global dp, dp_direcciones
 
@@ -73,14 +73,14 @@ def solve(secuenciaOne, secuenciaTwo):
     val = 0
     for e in range(sizeOne + 1):
         dp[e][0] = val
-        val -= 2
+        val -= penalizacion
         if e != 0:
             dp_direcciones[e][0][1] = 1
 
     val = 0
     for e in range(sizeTwo + 1):
         dp[0][e] = val
-        val -= 2
+        val -= penalizacion
         if e != 0:
             dp_direcciones[0][e][2] = 1
 

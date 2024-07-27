@@ -10,6 +10,16 @@ subtareas = [
     ["watson - crick"],
 ]
 
+# Lista de índices de subtareas que deben estar marcadas por defecto
+subtareas_marcadas = [
+    [],  # Para la primera tarea, marca la primera subtarea
+    [0,1],  # Para la segunda tarea, marca la segunda subtarea
+    [],  # Para la tercera tarea, marca ambas subtareas
+    [],  # Para la cuarta tarea, no marcar ninguna subtarea
+    [],  # Para la quinta tarea, marca la primera subtarea
+    []  # Para la sexta tarea, marca la segunda subtarea
+]
+
 class TabTODO(QWidget):
     def __init__(self):
         super().__init__()
@@ -27,6 +37,8 @@ class TabTODO(QWidget):
         layout = QVBoxLayout()
         for j in range(len(subtareas[num])):
             checkbox = QCheckBox(subtareas[num][j])
+            if j in subtareas_marcadas[num]:
+                checkbox.setChecked(True)
             layout.addWidget(checkbox)
         group_box.setLayout(layout)
         return group_box

@@ -1,13 +1,90 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout,  QLabel, QLineEdit, QTextEdit, QPushButton, QSpacerItem, QSizePolicy, QFrame, QMessageBox, QTableWidget, QTableWidgetItem, QSlider
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
+from PySide6.QtGui import QPixmap
 
 from alignment.sequence_alignment import solve
 import matplotlib.pyplot as plt
+import numpy as np
 import os
 import tempfile
-from PySide6.QtGui import QPixmap
+
 tareas = ["Matriz de Punto", "Alineamiento Global", "Alineamiento Local", "Alineamiento Proteinas"]
+
+
+def generar_dot_plot(seq1, seq2):
+    """Genera un dot plot para dos secuencias con etiquetas en los ejes."""
+    matrix = np.zeros((len(seq1), len(seq2)))
+
+    # Rellenar la matriz con coincidencias
+    for i in range(len(seq1)):
+        for j in range(len(seq2)):
+            if seq1[i] == seq2[j]:
+                matrix[i][j] = 1
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+
+    # Dibujar la matriz de puntos con color azul
+    cmap = plt.cm.colors.ListedColormap(['white', 'blue'])
+    ax.imshow(matrix, cmap=cmap, aspect='auto', origin='upper')
+
+    # Dibujar los puntos
+    for i in range(len(seq1)):
+        for j in range(len(seq2)):
+            if matrix[i][j] == 1:
+                ax.plot(j, i, 'ko')  # punto negro
+
+    # Configurar las etiquetas de los ejes
+    ax.set_xticks(range(len(seq2)))
+    ax.set_xticklabels(seq2)
+    ax.set_yticks(range(len(seq1)))
+    ax.set_yticklabels(seq1)
+
+    # Ajustar la cuadrícula
+    ax.grid(True, which='both', color='black', linestyle='-', linewidth=1)
+    ax.set_xticks(np.arange(-.5, len(seq2), 1), minor=True)
+    ax.set_yticks(np.arange(-.5, len(seq1), 1), minor=True)
+    ax.grid(which='minor', color='black', linestyle='-', linewidth=1)
+
+    return fig
+
+
+class VentanaDotPlot_matrizPuntos(QWidget):
+    def __init__(self, seq1, seq2, parent=None):
+        super().__init__(parent)
+        self.seq1 = seq1
+        self.seq2 = seq2
+        self.initUI()
+
+    def initUI(self):
+        layout = QVBoxLayout()
+
+        titulo = QLabel("Matriz de Puntos")
+        titulo.setFont(QFont("Arial", weight=QFont.Bold, italic=True))
+        titulo.setAlignment(Qt.AlignCenter)
+        layout.addWidget(titulo)
+
+        fig = generar_dot_plot(self.seq1, self.seq2)
+
+        temp_dir = tempfile.TemporaryDirectory()
+        temp_path = os.path.join(temp_dir.name, "dot_plot.png")
+        fig.savefig(temp_path)
+        plt.close(fig)
+
+        pixmap = QPixmap(temp_path)
+
+        label = QLabel(self)
+        label.setPixmap(pixmap)
+        layout.addWidget(label)
+
+        self.setLayout(layout)
+        self.setWindowTitle("Dot Plot")
+        self.resize(800, 800)
+        self.temp_dir = temp_dir  # Guardar la referencia para evitar que se borre
+
+    def closeEvent(self, event):
+        self.temp_dir.cleanup()
+        super().closeEvent(event)
 
 
 class VentanaAlineacionesTotalesTexto(QWidget):
@@ -18,7 +95,10 @@ class VentanaAlineacionesTotalesTexto(QWidget):
 
     def initUI(self):
         layout = QVBoxLayout()
+
         titulo = QLabel("Alineaciones Totales")
+        titulo.setFont(QFont("Arial", weight=QFont.Bold, italic=True))
+        titulo.setAlignment(Qt.AlignCenter)
         layout.addWidget(titulo)
 
         # Crear un QTextEdit para mostrar las alineaciones totales
@@ -46,8 +126,17 @@ class VentanaAlineacionesTotalesGrafica(QWidget):
 
     def initUI(self):
         layout = QVBoxLayout()
+
         titulo = QLabel("Alineaciones Totales")
+        titulo.setFont(QFont("Arial", weight=QFont.Bold, italic=True))
+        titulo.setAlignment(Qt.AlignCenter)
         layout.addWidget(titulo)
+
+        # Crear QLabel para mostrar el número de la alineación
+        self.alineacion_label = QLabel(self)
+        self.alineacion_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.alineacion_label)
+
 
         # Crear QLabel para mostrar la imagen de la alineación
         self.label = QLabel(self)
@@ -97,10 +186,15 @@ class VentanaAlineacionesTotalesGrafica(QWidget):
     def update_image(self, index):
         pixmap = QPixmap(self.image_paths[index])
         self.label.setPixmap(pixmap)
+        self.alineacion_label.setText(f"Alineación {index + 1}")
 
     def closeEvent(self, event):
         self.temp_dir.cleanup()
         super().closeEvent(event)
+
+
+
+
 
 class VentanaAlineacion(QWidget):
     def __init__(self, dp_matrix, cantidad_cadenas, alineaciones_totales, parent=None):
@@ -232,9 +326,9 @@ class Tab02(QWidget):
                 label_penalizacion = QLabel("Penalizacion")
                 area_layout.addWidget(label_penalizacion)
 
-                caja_texto = QLineEdit()
-                caja_texto.setPlaceholderText("Penalizacion default -2")
-                area_layout.addWidget(caja_texto)
+                self.caja_texto_penalizacion = QLineEdit()
+                self.caja_texto_penalizacion.setPlaceholderText("Penalizacion default -2")
+                area_layout.addWidget(self.caja_texto_penalizacion)
             else:
                 if i == 0:
                     boton_area.clicked.connect(self.funcion_para_primer_boton)
@@ -277,6 +371,7 @@ class Tab02(QWidget):
     def reset_texts(self):
         self.caja_texto1.clear()
         self.caja_texto2.clear()
+        self.caja_texto_penalizacion.clear()
 
     def update_buttons_state(self):
         texto1 = self.caja_texto1.text()
@@ -292,16 +387,27 @@ class Tab02(QWidget):
     ##  FUNCIONES PARA LOS BOTONES
     ## FUNCION PARA EL PRIMER BOTON DE MATRIZ DE PUNTOS
     def funcion_para_primer_boton(self):
-        QMessageBox.information(self, 'Primer boton', '¡Funcion para el primer boton!')
+        texto1 = self.caja_texto1.text()
+        texto2 = self.caja_texto2.text()
+        self.ventana_dot_plot = VentanaDotPlot_matrizPuntos(texto1, texto2)
+        self.ventana_dot_plot.show()
+
 
     ## FUNCION PARA EL SEGUNDO BOTON DE ALINEAMIENTO GLOBAL
     def funcion_para_segundo_boton_needleman(self):
         texto1 = self.caja_texto1.text()
         texto2 = self.caja_texto2.text()
+        penalizacion = self.caja_texto_penalizacion.text()
         #print(f"Texto 1: {texto1}")
         #print(f"Texto 2: {texto2}")
         # Llamar a la función solve con los textos obtenidos
-        dp, cantidadCadenas, alineacionesTotales = solve(texto1, texto2)
+        if not penalizacion:
+            penalizacion = 2
+            print("penalizacion: ", penalizacion)
+        else:
+            penalizacion = int(penalizacion)
+            print("penalizacion: ", penalizacion)
+        dp, cantidadCadenas, alineacionesTotales = solve(texto1, texto2, penalizacion)
         print(f"Resultado de solve:\nDP Matrix: {dp}\nCantidad de Cadenas: {cantidadCadenas}\nAlineaciones Totales: {alineacionesTotales}")
 
         # Crear y mostrar la nueva ventana con la matriz dp
