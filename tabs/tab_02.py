@@ -263,7 +263,7 @@ class Tab02(QWidget):
         layout = QVBoxLayout()
 
         # Agregar un título
-        titulo = QLabel("Alineamiento Global")
+        titulo = QLabel("Alineamiento dos secuencias")
         titulo.setFont(QFont("Arial", weight=QFont.Bold, italic=True))
         titulo.setAlignment(Qt.AlignCenter)
         layout.addWidget(titulo,  alignment=Qt.AlignTop)

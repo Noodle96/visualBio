@@ -1,6 +1,7 @@
 {
     "files": [
         "alignment/sequence_alignment.py",
+        "alignment/starAligment.py",
         "main.py",
         "tabs/tab_02.py",
         "tabs/tab_03.py",
