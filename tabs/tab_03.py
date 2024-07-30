@@ -3,7 +3,9 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 from PySide6.QtGui import QPixmap
 
-tareas = ["Aineamiento estrella", "Neighbor Joining"]
+tareas = ["Alineamiento estrella", "Neighbor Joining"]
+from alignment.starAligment import startAligmentFunction
+
 
 class Tab03(QWidget):
     def __init__(self):
@@ -61,7 +63,7 @@ class Tab03(QWidget):
 
             area_layout.addWidget(boton_area)
             if i == 0:
-                boton_area.clicked.connect(self.funcion_para_primer_boton)
+                boton_area.clicked.connect(self.funcion_para_primer_boton_AlineamientoEstrella)
             elif i == 1:
                 boton_area.clicked.connect(self.funcion_para_segundo_boton)
 
@@ -93,8 +95,15 @@ class Tab03(QWidget):
         self.update_buttons_state()
 
 
-    def funcion_para_primer_boton(self):
-        QMessageBox.information(self, 'primer boton', '¡Funcion para el primer boton!')
+    def funcion_para_primer_boton_AlineamientoEstrella(self):
+        texto_completo = self.cadenas_text.toPlainText()
+        #QMessageBox.information(self, 'primer boton', '¡Funcion para el primer boton!')
+        lineas = texto_completo.splitlines()
+        #print(lineas)
+        #print(len(lineas))
+        #print(type(lineas)) # <class, 'list'>
+
+        startAligmentFunction(lineas)
 
     def funcion_para_segundo_boton(self):
         QMessageBox.information(self, 'segundo boton', '¡Funcion para el segundo boton!')
@@ -106,7 +115,7 @@ class Tab03(QWidget):
         caja1 = self.cadenas_text.toPlainText()
         # Activar o desactivar los botones
         state = bool(caja1)
-        print("state: ", state)
+        #print("state: ", state)
         for widget in self.area_widgets:
             for child in widget.findChildren(QPushButton):
                 child.setEnabled(state)

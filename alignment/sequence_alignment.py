@@ -61,8 +61,9 @@ def solve(secuenciaOne, secuenciaTwo, penalizacion):
     reset_globals()  # Reiniciar variables globales
     global dp, dp_direcciones
 
-    if len(secuenciaOne) < len(secuenciaTwo):
-        secuenciaOne, secuenciaTwo = secuenciaTwo, secuenciaOne
+    # ! MODIFICACION AQUI
+    #if len(secuenciaOne) < len(secuenciaTwo):
+    #    secuenciaOne, secuenciaTwo = secuenciaTwo, secuenciaOne
 
     sizeOne = len(secuenciaOne)
     sizeTwo = len(secuenciaTwo)
