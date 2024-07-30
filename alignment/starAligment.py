@@ -84,4 +84,4 @@ def startAligmentFunction(sequences):
     for e in range(len(sequences)):
         print(f"S{e + 1}| {''.join(multipleAligment_representation[e])}")
 
-    return matriz_scores, row_max, multipleAligment_representation
+    return matriz_scores, row_max, multipleAligment_representation, map_first_alignment

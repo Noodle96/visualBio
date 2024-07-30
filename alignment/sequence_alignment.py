@@ -62,8 +62,8 @@ def solve(secuenciaOne, secuenciaTwo, penalizacion):
     global dp, dp_direcciones
 
     # ! MODIFICACION AQUI
-    #if len(secuenciaOne) < len(secuenciaTwo):
-    #    secuenciaOne, secuenciaTwo = secuenciaTwo, secuenciaOne
+    if len(secuenciaOne) < len(secuenciaTwo):
+        secuenciaOne, secuenciaTwo = secuenciaTwo, secuenciaOne
 
     sizeOne = len(secuenciaOne)
     sizeTwo = len(secuenciaTwo)

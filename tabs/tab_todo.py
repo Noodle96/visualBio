@@ -14,7 +14,7 @@ subtareas = [
 subtareas_marcadas = [
     [],  # Para la primera tarea, marca la primera subtarea
     [0,1],  # Para la segunda tarea, marca la segunda subtarea
-    [],  # Para la tercera tarea, marca ambas subtareas
+    [0],  # Para la tercera tarea, marca ambas subtareas
     [],  # Para la cuarta tarea, no marcar ninguna subtarea
     [],  # Para la quinta tarea, marca la primera subtarea
     []  # Para la sexta tarea, marca la segunda subtarea
